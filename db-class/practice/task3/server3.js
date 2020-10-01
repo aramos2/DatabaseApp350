@@ -124,17 +124,19 @@ app.get('/search', (req, res) => {
 app.get('/fit', (req, res) => {
 
     // TO Do
-	let camper =req.query.length;
+   let camper =req.query.length;
 	console.log("RV size:" + camper);
 	const results = []
 
-	for (const campground of campgrounds) {
-		if (campgrounds.lengthLimit <= camper ){
-			results.push('Campground:'+ campground.name + 'Location:' + campground.town + 'maxLength:'+ campground.lengthLimit);
+	for (var campground of campgrounds) {
+		if (campground.lengthLimit >= camper ){
+			results.push({campground: campground.name, location: campground.town, maxLength: campground.lengthLimit})
 		}
-			 res.json({campgrounds: results});
+			//  res.json({campgrounds: results});
 
-	}
+		
+	} 
+	  res.json({campgrounds: results});
 })
 
 
@@ -147,7 +149,6 @@ app.get('/fit', (req, res) => {
     The interpretation of this is as follows. If the request is
 
         /elevation?altitude=8000&direction=higher
-
     then the request should return all camggrounds higher than 8000 feet:
 
     {
@@ -177,12 +178,13 @@ app.get('/elevation', (req,res) => {
 	let elevationNum =req.query.altitude;
 	let direct = req.query.direction;
 	const results = []
-	for (const campground of campgrounds) {
-		if (campground.elevation > elevationNum ){
-			 results.push( campground.name + campground.elevation + campground.town);
+	for (var campground of campgrounds) {
+		if (campground.elevation > elevationNum && direct === "higher" ){
+			 results.push({campground: campground.name, elevation:  campground.elevation, town: campground.town})
                 }
-                         res.json({campgrounds: results});
+                       //  res.json({campgrounds: results});
 	} 
+		res.json({campgrounds: results});
 })
 
 //SERVER START

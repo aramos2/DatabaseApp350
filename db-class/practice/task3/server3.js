@@ -28,7 +28,7 @@ app.get("/hello", (req, res) => {
 });
 
 
-// Hi with one parameter, name 
+// Hi with one parameter, name
 //
 app.get("/hi", (req, res) => {
     res.json({msg: `Hi, ${req.query.name}`});
@@ -36,7 +36,7 @@ app.get("/hi", (req, res) => {
 
 
 /*
-List All get request. No Parameters,ype:   
+List All get request. No Parameters,ype:
     {"campgrounds":["Three Rivers Petroglyph Site",
                     "Baca Campground",
                     "South Fork Campground",
@@ -54,7 +54,7 @@ app.get("/listAll", (req, res) => {
     res.json({campgrounds: campgrounds.map((entry) => {return entry.name})});
 });
 
-                   
+
 /*
    Search get request takes one parameter q with the value of a campground name
    It returns the json object containing all the information for a campground
@@ -62,11 +62,11 @@ app.get("/listAll", (req, res) => {
 app.get('/search', (req, res) => {
     let searchTerm = req.query.q;
     console.log(`Search for ${searchTerm}`);
-    
+
     // TODO
-	 
-	for (const campground of campgrounds) { 
-		if (campground.name == searchTerm){ 
+
+	for (const campground of campgrounds) {
+		if (campground.name == searchTerm){
 			res.json(campground);
 		}
 	}
@@ -74,7 +74,7 @@ app.get('/search', (req, res) => {
 
 
 /* Fit get request. One parameter called length which is the length of the RV.
-   the request returns the campgrounds that can fit that length RV. 
+   the request returns the campgrounds that can fit that length RV.
    so, if the length parameter is 22 the method should return
 
    {
@@ -116,8 +116,8 @@ app.get('/search', (req, res) => {
     ]
    }
 
-   The output needs to match this format. The response json object has a key called 'campgrounds' 
-   whose value is an array of json objects each representing a campground. Each of those Json 
+   The output needs to match this format. The response json object has a key called 'campgrounds'
+   whose value is an array of json objects each representing a campground. Each of those Json
    objects in the array have the keys 'campground', 'location', and 'maxLength'.
 
 */
@@ -126,14 +126,14 @@ app.get('/fit', (req, res) => {
     // TO Do
 	let camper =req.query.length;
 	console.log("RV size:" + camper);
-	const results = [] 
+	const results = []
 
 	for (const campground of campgrounds) {
-		if (camper <= campgrounds.lengthLimit){
+		if (campgrounds.lengthLimit <= camper ){
 			results.push('Campground:'+ campground.name + 'Location:' + campground.town + 'maxLength:'+ campground.lengthLimit);
 		}
 			 res.json({campgrounds: results});
-		
+
 	}
 })
 
@@ -147,7 +147,7 @@ app.get('/fit', (req, res) => {
     The interpretation of this is as follows. If the request is
 
         /elevation?altitude=8000&direction=higher
-    
+
     then the request should return all camggrounds higher than 8000 feet:
 
     {
@@ -172,19 +172,17 @@ app.get('/fit', (req, res) => {
 */
 
   // TO DO
-app.get('/find', (req,res) => {
-	const result = []
+app.get('/elevation', (req,res) => {
 
-	function elevation (const altitude, const direction) {
-		for( ) {
-			if() {
-
-			}
-
-		}
-	return result;
-	}
-res.json(elevation )
+	let elevationNum =req.query.altitude;
+	let direct = req.query.direction;
+	const results = []
+	for (const campground of campgrounds) {
+		if (campground.elevation > elevationNum ){
+			 results.push( campground.name + campground.elevation + campground.town);
+                }
+                         res.json({campgrounds: results});
+	} 
 })
 
 //SERVER START

@@ -89,7 +89,7 @@ app.post("/addAttraction", async (req, res) => {
 app.get("/listAll", async (req, res) => {
     try {
         // TO DO: write the query below
-        const query = "TO DO";
+        const query = "SELECT * FROM campgrounds";
         const dbresponse = await pool.query(query);
         const results = dbresponse.rows.map((row) => {return row.name});
         res.json({campgrounds: results})
@@ -117,11 +117,15 @@ app.get('/search', async (req, res) => {
     console.log(`Search for ${searchTerm}`);
     
     // TODO
-    try {
+    try { const template = "SELECT name, location, maxlength FROM campgrounds";
+	//  const response = await pool.query(template);
+	 	for (var campground of template) {
+ 
+			if (searchTerm == template.name) {	
+       			res.json({name: searchTerm, location: template.location, maxlength: template.maxLength});
+			}
+        	}
        
-
-        
-        
     } catch (err){
         console.log(err);
     }
@@ -219,9 +223,9 @@ app.get('/search', async (req, res) => {
 app.get('/elevation', async (req, res) => {
     let query = '';
     if (req.query.direction == 'lower'){
-        query = "TO DO";
+        query = "SELECT name, elevation, town FROM campgrounds WHERE elevation < 8000";
     } else {
-        query =  "TO DO";
+        query =  "SELECT name, elevation, town FROM campgrounds WHERE elevation > 8000";
     }
     try {
         // TO DO
@@ -261,4 +265,4 @@ app.listen(app.get("port"), () => {
 	console.log(`Find the server at http://localhost:${app.get("port")}`);
 	 // eslint-disable-line no-console
 });
-Finally we are going to run the code with
+

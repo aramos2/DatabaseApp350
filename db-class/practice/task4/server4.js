@@ -117,18 +117,20 @@ app.get('/search', async (req, res) => {
     console.log(`Search for ${searchTerm}`);
     
     // TODO
-    try { const template = "SELECT name, location, maxlength FROM campgrounds";
-	//  const response = await pool.query(template);
-	 	for (var campground of template) {
- 
-			if (searchTerm == template.name) {	
-       			res.json({name: searchTerm, location: template.location, maxlength: template.maxLength});
+    try { const template = "SELECT name, location, maxlength FROM campgrounds WHERE name =$1 ";
+	  const response = await pool.query(template,[searchTerm] );
+	  const results = response.rows.map((row) => {return (row)}); 
+		let resultsArray = []; 	
+		for (var campground of results){
+			if (campground.name == searchTerm) {
+	  			resultsArray.push({campground: campground.name, location: campground.location, maxlength: campground.maxlength}); 
 			}
-        	}
-       
-    } catch (err){
+		}
+		res.json({campgrounds: resultsArray});  
+		  
+	} catch (err){
         console.log(err);
-    }
+    	  }	
 
 
 })
@@ -228,8 +230,16 @@ app.get('/elevation', async (req, res) => {
         query =  "SELECT name, elevation, town FROM campgrounds WHERE elevation > 8000";
     }
     try {
-        // TO DO
-
+        // TO DO 
+	// write the following variables response, results 
+	// complete writing the push statement
+	const results = [];
+	for (campground of campgrounds){ 
+		if (campground.elevation > query && req.query.direction === "lower") {
+		 results.push({}); 
+		}
+		res.json({campgrounds: results})
+	}  
 
     } catch (err){
          console.log(err);

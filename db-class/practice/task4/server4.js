@@ -186,7 +186,29 @@ app.get('/search', async (req, res) => {
 */
 
 // TO DO
+app.get('/fit', async (req, res) => { 
 
+  let camper = req.query.length;
+    console.log(`RV Size: `+ camper );
+
+    
+    try { const template = "SELECT name, location, maxlength FROM campgrounds WHERE maxlength =$1 ";
+          const response = await pool.query(template,[camper] );
+          const results = response.rows.map((row) => {return (row)});
+                let resultsArray = [];
+                for (var campground of results){
+                        if (campground.maxlength >= camper) {
+                                resultsArray.push({campground: campground.name, location: campground.location, maxlength: campground.maxlength});
+                        }                                                                                                                                                                                                                                       }
+                res.json({campgrounds: resultsArray});
+
+        } catch (err){
+        console.log(err);
+          }
+
+
+ 
+})
 
 
 /*
@@ -225,21 +247,27 @@ app.get('/search', async (req, res) => {
 app.get('/elevation', async (req, res) => {
     let query = '';
     if (req.query.direction == 'lower'){
-        query = "SELECT name, elevation, town FROM campgrounds WHERE elevation < 8000";
+        query = "SELECT name, elevation, location FROM campgrounds WHERE elevation < 8000";
+
     } else {
-        query =  "SELECT name, elevation, town FROM campgrounds WHERE elevation > 8000";
+        query =  "SELECT name, elevation, location FROM campgrounds WHERE elevation > 8000";
     }
     try {
         // TO DO 
-	// write the following variables response, results 
-	// complete writing the push statement
+	 //const template = "SELECT name, elevation, town FROM campgrounds WHERE elevation < 8000 = $1 ";
+	 const response = await pool.query(query);
+         const dbresults = response.rows.map((row) => {return (row)});  
+
 	const results = [];
-	for (campground of campgrounds){ 
-		if (campground.elevation > query && req.query.direction === "lower") {
-		 results.push({}); 
+	for (campground of dbresults){ 
+		if (campground.elevation >query ){
+		 
+		 results.push({campground: campground.name, elevation: campground.elevation, town: campground.location}); 
 		}
-		res.json({campgrounds: results})
-	}  
+		
+	}
+	res.json({campgrounds: results});
+	  
 
     } catch (err){
          console.log(err);
@@ -265,9 +293,31 @@ app.get('/elevation', async (req, res) => {
 
 // TO DO
 
+app.post("/addCampground", async (req, res) => {
+    const name = req.body.name;
+    const town = req.body.location;
+    const length = req.body.maxlength;
+    const elevation = req.body.elevation;
+    const sites = req.body.sites;
+    const pad = req.body.padtype;
+    try {
+        const template1 = "SELECT * FROM campgrounds WHERE name = $1 AND location = $2 AND maxlength = $3 AND elevation = $4 AND sites = $5 AND padtype = $6";
+        const check = await pool.query(template1, [name, town, length, elevation, sites, pad]);
+        if (check.rowCount != 0){
+            res.json({status: "campground already in database"});
+        }
+        else {
+            
+            const template2 = "INSERT INTO campgrounds (name, location, maxlength, elevation, sites, padtype) VALUES ($1, $2, $3, $4, $5, $6)"
+            const response = await pool.query(template2, [name, town, length, elevation, sites, pad]);
+            res.json({status: "added"});
+        }
+    } catch (err){
+        
+        console.log(err);
+    }
 
-
-
+})
 
 
 //SERVER START

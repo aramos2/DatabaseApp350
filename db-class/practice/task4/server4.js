@@ -246,24 +246,25 @@ app.get('/fit', async (req, res) => {
 
 app.get('/elevation', async (req, res) => {
     let query = '';
+    let altitude = req.query.altitude;
+    let direction = req.query.direction;	
     if (req.query.direction == 'lower'){
         query = "SELECT name, elevation, location FROM campgrounds WHERE elevation < 8000";
 
     } else {
-        query =  "SELECT name, elevation, location FROM campgrounds WHERE elevation > 8000";
+        query =  "SELECT name, elevation, location FROM campgrounds WHERE elevation > 8000 ";
     }
     try {
         // TO DO 
-	 //const template = "SELECT name, elevation, town FROM campgrounds WHERE elevation < 8000 = $1 ";
+	
 	 const response = await pool.query(query);
          const dbresults = response.rows.map((row) => {return (row)});  
 
 	const results = [];
 	for (campground of dbresults){ 
-		if (campground.elevation >query ){
 		 
 		 results.push({campground: campground.name, elevation: campground.elevation, town: campground.location}); 
-		}
+		
 		
 	}
 	res.json({campgrounds: results});

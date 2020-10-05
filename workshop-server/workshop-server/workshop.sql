@@ -1,4 +1,4 @@
-\c postgres 
+\t results = response.rows.map((row) => {return (row)});  postgres 
 
 DROP DATABASE IF EXISTS workshop;
 CREATE DATABASE workshop;
@@ -19,7 +19,7 @@ CREATE TABLE attendees (
 				('James Archer', 'MongoDB'),
 				('Linda Park', 'React Fundamentals'),
 				('Lucy Smith', 'Self-Driving Cars'),
-				('Roz Billingsley', NULL),
+				('Ann Nowicki', NULL),
 				('Samantha Eggert', 'DevOps 101'),
 				('Tim Smith', 'DevOps101'),
 				('Ahmed Abdelali', 'Docker Container Fundamentals'),

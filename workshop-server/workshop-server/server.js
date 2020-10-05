@@ -64,31 +64,29 @@ if all requires are met, the attendees name and workshop they signed up for shou
 */ 
 
 app.post("/api", async (req, res) => {
- const attendee = req.body.name;
+ const attendee = req.body.attendee;
  const workshop = req.body.workshop;  
 	
 	try {
 	const templateCheck = "SELECT * FROM attendees WHERE name = $1 AND workshop = $2 ";
 	const check = await pool.query(templateCheck, [attendee, workshop]);
-		if (check.rowCount != 0) { 
-			
-			res.json({error: "Attendee already signed up for this workshop."});
-		}  
-		
-		else if (attendee == null || workshop == null){
+		console.log(check.rows);
+		console.log(attendee, workshop);
+
+		if (attendee == null || workshop == null){
 			
 			res.json({error: 'parameters not given'});
 		} 
-		else if (attendee == null && workshop == null) {
+		else if(check.rowCount != 0) { 
 			
-			res.json ({error: 'parameters not given'}); 
-		}
-		
+			res.json({error: "Attendee already signed up for this workshop."});
+		}  
+
 		else {
 			const templateAdd = "INSERT INTO attendees (name, workshop) VALUES ($1, $2)";
 			const response = await pool.query(templateAdd, [attendee, workshop]);
-			const results = response.rows.map((row) => {return (row)});
-			res.json({status: "added"});
+			const results = response.rows.map((row) => {return (row.name, row.workshop)});
+			
 			
 			res.json({workshop: results});
 			} 
